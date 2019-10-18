@@ -15,7 +15,7 @@ import { history } from "src/ducks";
 import Vis from "src/components/Road";
 
 const WIDTH = 700,
-  HEIGHT = 400,
+  HEIGHT = 600,
   M = {
     top: 20,
     bottom: 5,
@@ -30,7 +30,7 @@ const WIDTH = 700,
     .domain([0, params.total])
     .range([HEIGHT, 0]),
   tScale = scaleLinear()
-    .domain([0, 2.5 * params.cycle])
+    .domain([0, params.duration])
     .range([0, WIDTH]),
   gTranslate = `translate(${M.left},${M.top})`,
   range = Array.apply(null, { length: 50 }).map(
@@ -43,7 +43,7 @@ const WIDTH = 700,
   );
 
 const TAxis = React.memo(({ mathClass }: { mathClass: string }) => (
-  <g transform={`translate(0,${xScale(params.light)})`}>
+  <g transform={`translate(0,${xScale(params.blockX)})`}>
     <path
       d={`M0,0L${WIDTH},0`}
       fill="none"

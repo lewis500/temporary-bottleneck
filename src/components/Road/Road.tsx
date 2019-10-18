@@ -5,11 +5,10 @@ import React, {
   useMemo
 } from "react";
 import { scaleLinear } from "d3-scale";
-import { AppContext, getGreen } from "src/ducks";
+import { AppContext } from "src/ducks";
 import useStyles from "./styleRoad";
 import * as params from "src/constants";
 import { history, xOfT } from "src/ducks";
-// import mo from "memoize-one";
 
 const Vis: FunctionComponent<{ width: number; height: number }> = ({
   width,
@@ -18,8 +17,7 @@ const Vis: FunctionComponent<{ width: number; height: number }> = ({
   const { state } = useContext(AppContext),
     classes = useStyles({
       width,
-      height,
-      isGreen: getGreen(state.time, params.cycle)
+      height
     }),
     xScale = useMemo(
       () =>
@@ -35,20 +33,19 @@ const Vis: FunctionComponent<{ width: number; height: number }> = ({
           .domain([0, 2 * params.roadWidth]),
       [height]
     );
-  const [light, roadWidth, carLength, carHeight] = useMemo(
+  const [blockX, roadWidth, carLength, carHeight] = useMemo(
     () => [
-      xScale(params.light),
+      xScale(params.blockX),
       height - yScale(params.roadWidth),
       xScale(params.carLength),
       height - yScale(params.carHeight)
     ],
     [xScale, yScale]
   );
-  const [roadPath, lightPath] = useMemo(
+  const [roadPath] = useMemo(
     () => [
-      `M0,0L${width},0 M${light + roadWidth / 2},${-height / 2}L${light +
-        roadWidth / 2},${height / 2}`,
-      `M${light + 2},${-roadWidth / 2}L${light + 2},${roadWidth / 2}`
+      `M0,0L${width},0 M${blockX + roadWidth / 2},${-height / 2}L${blockX +
+        roadWidth / 2},${height / 2}`
     ],
     [width, height]
   );
@@ -56,7 +53,6 @@ const Vis: FunctionComponent<{ width: number; height: number }> = ({
   return (
     <g transform={`translate(0,${height / 2 - roadWidth / 2})`}>
       <path className={classes.road} d={roadPath} strokeWidth={roadWidth} />
-      <path className={classes.light} d={lightPath} />
       {history.map((d, i) => (
         <rect
           key={i}

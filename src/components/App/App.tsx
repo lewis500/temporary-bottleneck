@@ -1,11 +1,10 @@
 import React, { FunctionComponent, useContext, useReducer } from "react";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import {useTimer } from "src/useTimerHook";
+import { useTimer } from "src/useTimerHook";
 import * as params from "src/constants";
 import { AppContext, reducer, initialState } from "src/ducks";
 import Plot from "src/components/Plot";
-import FD from "src/components/FD";
 import useStyles from "./styleApp";
 
 const EMPTY = {};
@@ -15,12 +14,11 @@ const App: FunctionComponent<{}> = () => {
     classes = useStyles(EMPTY);
 
   useTimer((dt: number) => {
-    // dt /= params.delta * 5;
     dt *= 4;
     dispatch({ type: "TICK", payload: dt });
   }, play);
 
-  if (state.time > 2.5 * params.cycle) dispatch({ type: "RESET" });
+  if (state.time > params.duration ) dispatch({ type: "RESET" });
 
   return (
     <div className={classes.main}>
@@ -45,11 +43,7 @@ const App: FunctionComponent<{}> = () => {
           Reset
         </Button>
       </Paper>
-      {/* <div className={classes.visContainer}>
-        <Vis />
-      </div> */}
       <Plot />
-      <FD />
     </div>
   );
 };
