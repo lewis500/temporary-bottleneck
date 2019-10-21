@@ -17,6 +17,10 @@ export default makeStyles(
       stroke: colors.lightBlue["A400"],
       strokeWidth: "2px"
     },
+    interface: {
+      strokeWidth: "3px",
+      stroke: colors.pink["500"]
+    },
     hidden: {
       fill: "white",
       opacity: 0

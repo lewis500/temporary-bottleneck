@@ -20,13 +20,13 @@ export const getBlocked = (() => {
   const {
     blockTimes: [a, b]
   } = params;
-  return (time: number) => time > a && time < b;
+  return (time: number) => time >= a && time <= b;
 })();
 
 export const history = (() => {
-  const { vf1, qc1, delta, sj1, Q, total, blockX } = params,
+  const { vf1, delta, Q, total, blockX } = params,
     S = vf1 / Q,
-    numCars = params.duration / Q ;
+    numCars = params.duration / Q;
 
   let cars: number[] = range(0, numCars).map(i => total - i * S);
   const history = cars.map(x => [[0, x]]);
@@ -34,13 +34,37 @@ export const history = (() => {
     const blocked = getBlocked(t);
     cars = cars.map((x, i, arr) => {
       let nextX = i === 0 ? Infinity : arr[i - 1];
-      if (!blocked || x < blockX) return x + vs1(nextX - x) * delta;
+      if (!blocked || x <= blockX) return x + vs1(nextX - x) * delta;
       // should u put a min operation in here to stop overtaking?
       return x + vs2(nextX - x) * delta;
     });
     for (let i = 0; i < history.length; i++) history[i].push([t, cars[i]]);
   }
   return history;
+})();
+
+console.log(history)
+
+type Point = [number, number];
+
+type Interface = {
+  start: Point;
+  end: Point;
+  u: number;
+  l: number;
+};
+
+export const interfaces = (() => {
+  // const interfaces: Interface[] = [];
+  const A = [params.blockTimes[0] + params.delta, params.blockX],
+    B = [params.blockTimes[1], params.blockX],
+    kQueue = params.kj1 - params.qc2 / params.w1,
+    vBack = -(params.Q - params.qc2) / (params.Q / params.vf1 - kQueue),
+    T =
+      (params.blockDuration * vBack) / (params.w1 - vBack) +
+      params.blockDuration,
+    C = [A[0] + T, params.blockX - T * vBack];
+  return { dots: [A, B, C], lines: [[A, C], [B, C]] };
 })();
 
 export const xOfT = history.map((d, i) =>

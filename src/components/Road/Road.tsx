@@ -49,20 +49,27 @@ const Vis: FunctionComponent<{ width: number; height: number }> = ({
     ],
     [width, height]
   );
+  let t = state.time;
+  let M = params.total + params.sj1;
+  let xs = history
+    .map((d, i) => [i, xOfT[i](t)])
+    .filter(d => d[1] < M && d[1] > 0);
 
   return (
-    <g transform={`translate(0,${height / 2 - roadWidth / 2})`}>
+    <g transform={`translate(0,${0})`}>
       <path className={classes.road} d={roadPath} strokeWidth={roadWidth} />
-      {history.map((d, i) => (
-        <rect
-          key={i}
-          className={classes.car}
-          transform={`translate(${xScale(xOfT[i](state.time)) -
-            carLength},${-carHeight / 2})`}
-          width={carLength}
-          height={carHeight}
-        />
-      ))}
+      {xs
+        // filter(d=>d[0][])
+        .map((d, i) => (
+          <rect
+            key={d[0]}
+            className={classes.car}
+            transform={`translate(${xScale(d[1]) - carLength},${-carHeight /
+              2})`}
+            width={carLength}
+            height={carHeight}
+          />
+        ))}
     </g>
   );
 };

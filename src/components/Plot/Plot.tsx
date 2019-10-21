@@ -1,8 +1,7 @@
 import React, {
   createElement as CE,
   FunctionComponent,
-  useContext,
-  useLayoutEffect
+  useContext
 } from "react";
 import * as params from "../../constants";
 import { AppContext } from "src/ducks";
@@ -13,6 +12,7 @@ import useStyles from "./stylePlot";
 import simplify from "simplify-js";
 import { history } from "src/ducks";
 import Vis from "src/components/Road";
+import * as ducks from "src/ducks";
 
 const WIDTH = 700,
   HEIGHT = 600,
@@ -142,12 +142,23 @@ export default () => {
         <CoverMask time={state.time} />
         <g style={maskStyle}>
           <Trajectories className={classes.trajectory} />
-          <g
-            transform={`translate(${tScale(state.time)},${HEIGHT}) rotate(-90)`}
-          >
-            <Vis height={30} width={HEIGHT} />
-          </g>
         </g>
+        <g transform={`translate(${tScale(state.time)},${HEIGHT}) rotate(-90)`}>
+          <Vis height={30} width={HEIGHT} />
+        </g>
+        {ducks.interfaces.dots.map((d, i) => (
+          <circle key={i} cx={tScale(d[0])} cy={xScale(d[1])} r="5" />
+        ))}
+        {ducks.interfaces.lines.map((d, i) => (
+          <line
+            key={i}
+            x1={tScale(d[0][0])}
+            y1={xScale(d[0][1])}
+            x2={tScale(d[1][0])}
+            y2={xScale(d[1][1])}
+            className={classes.interface}
+          />
+        ))}
         <TAxis mathClass={classes.math} />
         <XAxis mathClass={classes.math} />
       </g>
