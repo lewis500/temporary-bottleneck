@@ -1,9 +1,9 @@
-export const total = 650;
+export const total = 550;
 export const blockX = total - 80;
 
 export const vf1 = (100 * 1000) / 3600; /* 60 mph to m/s */
 export const qc1 = 4500 / 3600;
-export const kj1 = 125 / 1000;
+export const kj1 = 110 / 1000;
 export const sj1 = 1 / kj1;
 export const kc1 = qc1 / vf1;
 export const w1 = qc1 / (kj1 - kc1);
@@ -21,8 +21,11 @@ export const roadWidth = 10;
 export const delta = 0.2;
 
 export const duration = 100;
-export const blockDuration = 45;
-export const blockStart = 15-delta;
+export const blockDuration = 35;
+export const blockStart = 15 - delta;
 export const blockTimes = [blockStart, blockStart + blockDuration];
 
 export const Q = qc1 * 0.7;
+
+export const aDetector = 30;
+export const dDetector = total - 50;
