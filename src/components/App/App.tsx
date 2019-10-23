@@ -34,7 +34,7 @@ const App = () => {
   return (
     <>
       <div className={classes.title}>
-        <div>Temporary Bottleneck</div>
+        <div>Construction Zone</div>
       </div>
       <div className={classes.main}>
         <div>
