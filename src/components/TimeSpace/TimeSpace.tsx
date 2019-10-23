@@ -126,7 +126,7 @@ export default ({ width, height }: { width: number; height: number }) => {
         <g style={coverMaskStyle}>
           <Trajectories tScale={tScale} xScale={xScale} />
         </g>
-        <g style={maskStyle}>
+        <g >
           <g
             transform={`translate(${tScale(state.time)},${height}) rotate(-90)`}
           >

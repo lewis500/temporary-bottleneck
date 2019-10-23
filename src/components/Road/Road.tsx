@@ -20,7 +20,7 @@ export default ({ width, height }: { width: number; height: number }) => {
       height
     }),
     xScale = useScale([0, width], [0, params.total], [width]),
-    yScale = useScale([height, 0], [0, params.roadWidth], [width]);
+    yScale = useScale([height, 0], [0, 2 * params.roadWidth], [height]);
   const [blockX, roadWidth, carLength, carHeight] = useMemo(
     () => [
       xScale(params.blockX),
@@ -30,8 +30,6 @@ export default ({ width, height }: { width: number; height: number }) => {
     ],
     [xScale, yScale]
   );
-  console.log('length',carLength)
-  console.log('height',carHeight)
   const [roadPath] = useMemo(() => [`M0,0L${width},0`], [width]);
   let t = state.time / delta;
   let M = params.total + params.sj1;
@@ -42,7 +40,7 @@ export default ({ width, height }: { width: number; height: number }) => {
   });
 
   return (
-    <g transform={`translate(0,${0})`}>
+    <g>
       <path
         className={classes.road}
         d={roadPath}
@@ -60,8 +58,8 @@ export default ({ width, height }: { width: number; height: number }) => {
           key={d[0]}
           className={classes.car}
           transform={`translate(${xScale(d[1]) - carLength},${-carHeight / 2})`}
-          width={carLength}
           height={carHeight}
+          width={carLength}
         />
       ))}
     </g>
@@ -77,16 +75,6 @@ const useStyles = makeStyles({
     rx: 1,
     ry: 1
   },
-  svg: ({ width, height }: { width: number; height: number }) => ({
-    width,
-    height,
-    display: "block",
-    // margin: "30px 0",
-    "& text": {
-      fontFamily: "Puritan, san-serif",
-      fontSize: "13px"
-    }
-  }),
   text: {
     textAlign: "center",
     fontSize: "12px",
