@@ -1,38 +1,20 @@
-import React, {
-  createElement as CE,
-  FunctionComponent,
-  useContext,
-  useMemo
-} from "react";
-import { scaleLinear } from "d3-scale";
+import React, { useContext, useMemo } from "react";
 import { AppContext } from "src/ducks";
-import useStyles from "./styleRoad";
 import * as params from "src/constants";
-import { history, xOfT } from "src/ducks";
+import { delta } from "src/constants";
+import { history, xOfT2, getBlocked } from "src/ducks";
+import { colors } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
+import useScale from "src/useScale";
 
-const Vis: FunctionComponent<{ width: number; height: number }> = ({
-  width,
-  height
-}) => {
+export default ({ width, height }: { width: number; height: number }) => {
   const { state } = useContext(AppContext),
     classes = useStyles({
       width,
       height
     }),
-    xScale = useMemo(
-      () =>
-        scaleLinear()
-          .range([0, width])
-          .domain([0, params.total]),
-      [width]
-    ),
-    yScale = useMemo(
-      () =>
-        scaleLinear()
-          .range([height, 0])
-          .domain([0, 2 * params.roadWidth]),
-      [height]
-    );
+    xScale = useScale([0, width], [0, params.total], [width]),
+    yScale = useScale([height, 0], [0, 2 * params.roadWidth], [height]);
   const [blockX, roadWidth, carLength, carHeight] = useMemo(
     () => [
       xScale(params.blockX),
@@ -42,35 +24,61 @@ const Vis: FunctionComponent<{ width: number; height: number }> = ({
     ],
     [xScale, yScale]
   );
-  const [roadPath] = useMemo(
-    () => [
-      `M0,0L${width},0 M${blockX + roadWidth / 2},${-height / 2}L${blockX +
-        roadWidth / 2},${height / 2}`
-    ],
-    [width, height]
-  );
-  let t = state.time;
+  const [roadPath] = useMemo(() => [`M0,0L${width},0`], [width]);
+  let t = state.time / delta;
   let M = params.total + params.sj1;
-  let xs = history
-    .map((d, i) => [i, xOfT[i](t)])
-    .filter(d => d[1] < M && d[1] > 0);
+  let xs = history.map((d, i) => {
+    const int = Math.floor(t);
+    const frac = t - int;
+    return [i, xOfT2[i](int, frac)];
+  });
+
 
   return (
-    <g transform={`translate(0,${0})`}>
-      <path className={classes.road} d={roadPath} strokeWidth={roadWidth} />
-      {xs
-        // filter(d=>d[0][])
-        .map((d, i) => (
+    <g>
+      <path
+        className={classes.road}
+        d={roadPath}
+        style={{ strokeWidth: roadWidth }}
+      />
+      {getBlocked(state.time) && (
+        <path
+          className={classes.cZone}
+          d={`M${xScale(params.blockX)},0L${xScale(params.total)},0`}
+          strokeWidth={roadWidth}
+        />
+      )}
+      <g>
+        {xs.map((d, i) => (
           <rect
             key={d[0]}
             className={classes.car}
             transform={`translate(${xScale(d[1]) - carLength},${-carHeight /
               2})`}
-            width={carLength}
             height={carHeight}
+            width={carLength}
           />
         ))}
+      </g>
     </g>
   );
 };
-export default Vis;
+
+const useStyles = makeStyles({
+  road: {
+    stroke: colors.grey["300"]
+  },
+  car: {
+    fill: colors.purple["A400"],
+    rx: 1,
+    ry: 1
+  },
+  text: {
+    textAlign: "center",
+    fontSize: "12px",
+    fontFamily: "Puritan, sans-serif"
+  },
+  cZone: {
+    stroke: colors.amber["A700"]
+  }
+});
