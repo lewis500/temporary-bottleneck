@@ -18,14 +18,15 @@ export const w2 = qc2 / (kj2 - kc2);
 export const carLength = 5;
 export const carHeight = 2;
 export const roadWidth = 10;
-export const delta = 0.2;
+export const delta = 0.15;
 
-export const duration = 100;
+export const duration = 115;
 export const blockDuration = 35;
 export const blockStart = 15 - delta;
 export const blockTimes = [blockStart, blockStart + blockDuration];
 
-export const Q = qc1 * 0.7;
+export const Q = qc1 * 0.68;
 
 export const aDetector = 30;
 export const dDetector = total - 50;
+export const speed = 6;

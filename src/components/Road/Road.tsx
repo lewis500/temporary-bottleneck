@@ -1,10 +1,7 @@
 import React, {
-  createElement as CE,
-  FunctionComponent,
   useContext,
   useMemo
 } from "react";
-import { scaleLinear } from "d3-scale";
 import { AppContext } from "src/ducks";
 import * as params from "src/constants";
 import { delta } from "src/constants";

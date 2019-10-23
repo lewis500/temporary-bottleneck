@@ -19,9 +19,9 @@ import TexLabel from "src/components/TexLabel";
 
 const M = {
     top: 20,
-    bottom: 5,
+    bottom: 25,
     left: 20,
-    right: 50
+    right: 40
   },
   gTranslate = `translate(${M.left},${M.top})`;
 
@@ -40,7 +40,7 @@ const Axes = (() => {
           style={style}
           markerStart="url(#arrow)"
         />
-        <TexLabel dx={-10} dy={-25} latexstring="t \text{(sec)}" />
+        <TexLabel dx={-10} dy={-25} latexstring="x \text{(m)}" />
       </g>
       <g transform={`translate(0,${height})`}>
         <path
@@ -50,7 +50,7 @@ const Axes = (() => {
           style={style}
           markerEnd="url(#arrow)"
         />
-        <TexLabel dx={width - 70} dy={5} latexstring="x \; \text{(m)}" />
+        <TexLabel dx={width - 30 } dy={5} latexstring="t\; \text{(sec)}" />
       </g>
     </>
   );

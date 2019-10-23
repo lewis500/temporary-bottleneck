@@ -64,10 +64,14 @@ export default ({ width, height }: { width: number; height: number }) => {
   // let { width, height } = marginer({ width, height });
   width = width - M.left - M.right;
   height = height - M.top - M.bottom;
-  const vehScale = useScale([height, 0], [ducks.history.length, 0], [height]),
+  const vehScale = useScale(
+      [height, 0],
+      [0, params.Q * params.duration],
+      [height]
+    ),
     tScale = useScale([0, width], [0, params.duration], [width]),
     aPath = useMemo(() => {
-      return "M" + ducks.cumulative.map(d => [tScale(d.t), vehScale(d.a)]);
+      return "M" + ducks.cumulative.map(d => [tScale(d.t), vehScale(d.d)]);
     }, [width, height]);
   return (
     <svg className={classes.svg}>
@@ -98,7 +102,8 @@ const useStyles = makeStyles({
     opacity: 0.8
   },
   aPath: {
-    stroke: colors.purple["A400"]
+    stroke: colors.purple["A400"],
+    fill: "none"
   },
   container: {
     position: "relative",

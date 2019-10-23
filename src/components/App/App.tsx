@@ -6,6 +6,7 @@ import * as params from "src/constants";
 import { AppContext, reducer, initialState } from "src/ducks";
 import TimeSpace from "src/components/TimeSpace";
 import { makeStyles, colors } from "@material-ui/core";
+import Cumulative from "../Cumulative";
 
 const EMPTY = {};
 const App = () => {
@@ -14,7 +15,7 @@ const App = () => {
     classes = useStyles(EMPTY);
 
   useTimer((dt: number) => {
-    dt *= 4;
+    dt *= params.speed;
     dispatch({ type: "TICK", payload: dt });
   }, play);
 
@@ -22,27 +23,32 @@ const App = () => {
 
   return (
     <div className={classes.main}>
-      <Paper className={classes.paper} elevation={2}>
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="secondary"
-          onClick={() => dispatch({ type: "SET_PLAY", payload: !play })}
-        >
-          {play ? "PAUSE" : "PLAY"}
-        </Button>
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            dispatch({ type: "RESET" });
-          }}
-        >
-          Reset
-        </Button>
-      </Paper>
-      <TimeSpace width={700} height={400}/>
+      <div>
+        <TimeSpace width={700} height={350} />
+      </div>
+      <div>
+        <Cumulative width={400} height={350} />
+        <Paper className={classes.paper} elevation={2}>
+          <Button
+            className={classes.button}
+            variant="contained"
+            color="secondary"
+            onClick={() => dispatch({ type: "SET_PLAY", payload: !play })}
+          >
+            {play ? "PAUSE" : "PLAY"}
+          </Button>
+          <Button
+            className={classes.button}
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              dispatch({ type: "RESET" });
+            }}
+          >
+            Reset
+          </Button>
+        </Paper>
+      </div>
     </div>
   );
 };
@@ -66,19 +72,14 @@ const useStyles = makeStyles({
     }
   },
   main: {
-    maxWidth: "900px",
     color: colors.grey["800"],
-    margin: "0 auto",
-    boxSizing: "border-box",
-    display: "flex",
-    flexDirection: "column"
+    margin: "auto",
+    display: "flex"
   },
   paper: {
     maxWidth: "500px",
-    // width: 300,
     margin: "auto",
     display: "flex",
-    // padding: "24px 36px",
     padding: "20px",
     flexDirection: "row",
     alignItems: "center"
@@ -86,9 +87,6 @@ const useStyles = makeStyles({
   button: {
     margin: "5px"
   },
-  // button: {
-  //   alignSelf: "center"
-  // },
   visContainer: {
     margin: "0 auto"
   },
