@@ -50,7 +50,7 @@ const Axes = (() => {
           style={style}
           markerEnd="url(#arrow)"
         />
-        <TexLabel dx={width - 30 } dy={5} latexstring="t\; \text{(sec)}" />
+        <TexLabel dx={width - 30} dy={5} latexstring="t\; \text{(sec)}" />
       </g>
     </>
   );
@@ -117,8 +117,8 @@ export default ({ width, height }: { width: number; height: number }) => {
     <svg className={classes.svg}>
       {Marker}
       <g transform={gTranslate}>
-        <mask id="myMask-2">
-          <rect width={width} height={height} fill="white" />
+        <mask id="myMask3">
+          <rect height={width} width={height} fill="white" />
         </mask>
         <mask id="coverMask">
           <rect width={tScale(state.time)} height={height} fill="white" />
@@ -126,10 +126,9 @@ export default ({ width, height }: { width: number; height: number }) => {
         <g style={coverMaskStyle}>
           <Trajectories tScale={tScale} xScale={xScale} />
         </g>
-        <g >
-          <g
-            transform={`translate(${tScale(state.time)},${height}) rotate(-90)`}
-          >
+        <g transform={`translate(${tScale(state.time)},${height}) rotate(-90)`}>
+          {/* <g></g> */}
+          <g style={{ mask: "url(#myMask3)" }}>
             <Road height={30} width={height} />
           </g>
         </g>
