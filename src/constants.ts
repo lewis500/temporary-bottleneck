@@ -1,3 +1,4 @@
+import { colors } from "@material-ui/core";
 export const total = 550;
 export const blockX = total - 80;
 
@@ -20,7 +21,7 @@ export const carHeight = 2;
 export const roadWidth = 10;
 export const delta = 0.15;
 
-export const duration = 115;
+export const duration = 105;
 export const blockDuration = 35;
 export const blockStart = 15 - delta;
 export const blockTimes = [blockStart, blockStart + blockDuration];
@@ -30,3 +31,6 @@ export const Q = qc1 * 0.68;
 export const aDetector = 30;
 export const dDetector = total - 50;
 export const speed = 6;
+
+export const aColor = colors.deepOrange['A400'];
+export const dColor = colors.indigo['A400'];

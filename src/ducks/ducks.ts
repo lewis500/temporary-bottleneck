@@ -104,6 +104,10 @@ type ActionTypes =
       type: "RESTART";
     }
   | {
+      type: "SET_TIME";
+      payload: number;
+    }
+  | {
       type: "RESET";
     }
   | {
@@ -113,6 +117,11 @@ type ActionTypes =
 
 export const reducer = (state: State, action: ActionTypes): State => {
   switch (action.type) {
+    case "SET_TIME":
+      return {
+        ...state,
+        time: action.payload
+      };
     case "TICK":
       return {
         ...state,

@@ -38,7 +38,7 @@ const Axes = (() => {
           style={style}
           markerStart="url(#arrow)"
         />
-        <TexLabel dx={-10} dy={-25} latexstring="t \text{sec}" />
+        <TexLabel dx={-10} dy={-25} latexstring="veh" />
       </g>
       <g transform={`translate(0,${height})`}>
         <path
@@ -48,11 +48,7 @@ const Axes = (() => {
           markerEnd="url(#arrow)"
           style={style}
         />
-        <TexLabel
-          dx={width - 70}
-          dy={5}
-          latexstring="veh \; \text{(veh/100 m)}"
-        />
+        <TexLabel dx={width - 5} dy={5} latexstring="t" />
       </g>
     </>
   );
@@ -70,9 +66,13 @@ export default ({ width, height }: { width: number; height: number }) => {
       [height]
     ),
     tScale = useScale([0, width], [0, params.duration], [width]),
-    aPath = useMemo(() => {
+    dPath = useMemo(() => {
       return "M" + ducks.cumulative.map(d => [tScale(d.t), vehScale(d.d)]);
     }, [width, height]);
+
+  const aPath = useMemo(() => {
+    return "M" + ducks.cumulative.map(d => [tScale(d.t), vehScale(d.a)]);
+  }, [width, height]);
   return (
     <svg className={classes.svg}>
       <Arrow />
@@ -82,6 +82,7 @@ export default ({ width, height }: { width: number; height: number }) => {
         </mask>
         <g mask="url(#coverMask-cum)">
           <path className={classes.aPath} d={aPath} />
+          <path className={classes.dPath} d={dPath} />
         </g>
         <Axes width={width} height={height} />
       </g>
@@ -102,8 +103,14 @@ const useStyles = makeStyles({
     opacity: 0.8
   },
   aPath: {
-    stroke: colors.purple["A400"],
-    fill: "none"
+    stroke: params.aColor,
+    fill: "none",
+    strokeWidth: 2
+  },
+  dPath: {
+    stroke: params.dColor,
+    fill: "none",
+    strokeWidth: 2
   },
   container: {
     position: "relative",

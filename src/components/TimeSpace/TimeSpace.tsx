@@ -1,6 +1,5 @@
 import React, {
   createElement as CE,
-  FunctionComponent,
   useContext
 } from "react";
 import * as params from "../../constants";
@@ -16,11 +15,12 @@ import { makeStyles, createStyles } from "@material-ui/styles";
 import { colors } from "@material-ui/core";
 import useScale from "src/useScale";
 import TexLabel from "src/components/TexLabel";
+import { number } from "prop-types";
 
 const M = {
     top: 20,
     bottom: 25,
-    left: 20,
+    left: 50,
     right: 40
   },
   gTranslate = `translate(${M.left},${M.top})`;
@@ -40,7 +40,7 @@ const Axes = (() => {
           style={style}
           markerStart="url(#arrow)"
         />
-        <TexLabel dx={-10} dy={-25} latexstring="x \text{(m)}" />
+        <TexLabel dx={-5} dy={-25} latexstring="x" />
       </g>
       <g transform={`translate(0,${height})`}>
         <path
@@ -50,7 +50,7 @@ const Axes = (() => {
           style={style}
           markerEnd="url(#arrow)"
         />
-        <TexLabel dx={width - 30} dy={5} latexstring="t\; \text{(sec)}" />
+        <TexLabel dx={width - 5} dy={5} latexstring="t" />
       </g>
     </>
   );
@@ -71,7 +71,7 @@ const Trajectories = (() => {
       tScale: ScaleLinear<number, number>;
       xScale: ScaleLinear<number, number>;
     }) => (
-      <g>
+      <g style={coverMaskStyle}>
         {history.map((trajectory, key) =>
           CE("path", {
             style,
@@ -84,6 +84,41 @@ const Trajectories = (() => {
         )}
       </g>
     )
+  );
+})();
+
+const Detectors = (() => {
+  const dStyle = {
+      strokeWidth: "2px",
+      stroke: params.dColor,
+      fill: "none",
+      strokeDasharray: "3,4",
+      strokeLinecap: "round"
+    },
+    aStyle = { ...dStyle, stroke: params.aColor };
+  return ({
+    xScale,
+    width
+  }: {
+    xScale: ScaleLinear<number, number>;
+    width: number;
+  }) => (
+    <g>
+      <g transform={`translate(0,${xScale(params.aDetector)})`}>
+        <TexLabel latexstring="x_a" dx={-22} dy={-10} />
+        {CE("path", {
+          ...aStyle,
+          d: `M0,0L${width},0`
+        })}
+      </g>
+      <g transform={`translate(0,${xScale(params.dDetector)})`}>
+        <TexLabel latexstring="x_d" dx={-22} dy={-10} />
+        {CE("path", {
+          ...dStyle,
+          d: `M0,0L${width},0`
+        })}
+      </g>
+    </g>
   );
 })();
 
@@ -103,8 +138,6 @@ const Marker = (
     </marker>
   </defs>
 );
-const EMPTY = {};
-const maskStyle = { mask: "url(#myMask-2)" };
 export default ({ width, height }: { width: number; height: number }) => {
   const classes = useStyles({ width, height });
   width = width - M.left - M.right;
@@ -112,23 +145,21 @@ export default ({ width, height }: { width: number; height: number }) => {
   const { state } = useContext(AppContext),
     xScale = useScale([height, 0], [0, params.total], [height]),
     tScale = useScale([0, width], [0, params.duration], [width]);
-
   return (
     <svg className={classes.svg}>
       {Marker}
       <g transform={gTranslate}>
-        <mask id="myMask3">
-          <rect height={width} width={height} fill="white" />
+        <mask id="myMask">
+          <rect height={height} width={width} fill="white" stroke="none" />
         </mask>
         <mask id="coverMask">
           <rect width={tScale(state.time)} height={height} fill="white" />
         </mask>
-        <g style={coverMaskStyle}>
+        <g style={{ mask: "url(#myMask)" }}>
           <Trajectories tScale={tScale} xScale={xScale} />
-        </g>
-        <g transform={`translate(${tScale(state.time)},${height}) rotate(-90)`}>
-          {/* <g></g> */}
-          <g style={{ mask: "url(#myMask3)" }}>
+          <g
+            transform={`translate(${tScale(state.time)},${height}) rotate(-90)`}
+          >
             <Road height={30} width={height} />
           </g>
         </g>
@@ -145,6 +176,7 @@ export default ({ width, height }: { width: number; height: number }) => {
             className={classes.interface}
           />
         ))}
+        <Detectors xScale={xScale} width={width} />
         <Axes width={width} height={height} />
       </g>
     </svg>
@@ -166,7 +198,7 @@ const useStyles = makeStyles(
     },
     trajectory: {
       fill: "none",
-      stroke: colors.lightBlue["A400"],
+      stroke: colors.lightBlue["300"],
       strokeWidth: "2px"
     },
     interface: {

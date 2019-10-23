@@ -1,11 +1,8 @@
-import React, {
-  useContext,
-  useMemo
-} from "react";
+import React, { useContext, useMemo } from "react";
 import { AppContext } from "src/ducks";
 import * as params from "src/constants";
 import { delta } from "src/constants";
-import { history, xOfT, xOfT2, getBlocked } from "src/ducks";
+import { history, xOfT2, getBlocked } from "src/ducks";
 import { colors } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import useScale from "src/useScale";
@@ -36,6 +33,7 @@ export default ({ width, height }: { width: number; height: number }) => {
     return [i, xOfT2[i](int, frac)];
   });
 
+
   return (
     <g>
       <path
@@ -50,15 +48,18 @@ export default ({ width, height }: { width: number; height: number }) => {
           strokeWidth={roadWidth}
         />
       )}
-      {xs.map((d, i) => (
-        <rect
-          key={d[0]}
-          className={classes.car}
-          transform={`translate(${xScale(d[1]) - carLength},${-carHeight / 2})`}
-          height={carHeight}
-          width={carLength}
-        />
-      ))}
+      <g>
+        {xs.map((d, i) => (
+          <rect
+            key={d[0]}
+            className={classes.car}
+            transform={`translate(${xScale(d[1]) - carLength},${-carHeight /
+              2})`}
+            height={carHeight}
+            width={carLength}
+          />
+        ))}
+      </g>
     </g>
   );
 };
